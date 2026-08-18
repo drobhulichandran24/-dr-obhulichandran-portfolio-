@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dr. Obhuli Chandran M — Medical Imaging Technology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e13;
+    --panel:#111820;
+    --panel-2:#0d1319;
+    --line:#22303c;
+    --ink:#e7edf2;
+    --ink-dim:#8fa1b3;
+    --ink-faint:#5b6b79;
+    --cyan:#7ecbff;
+    --cyan-dim:#3a6b8a;
+    --amber:#e8a33d;
+    --radius:2px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Source Serif 4', serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+  a{color:inherit;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .disp{font-family:'Space Grotesk', sans-serif;}
+
+  .grid-bg{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:64px 64px;
+    opacity:0.18;
+  }
+  .scanline{
+    position:fixed; left:0; right:0; height:2px; z-index:1; pointer-events:none;
+    background:linear-gradient(90deg, transparent, var(--cyan), transparent);
+    box-shadow:0 0 20px 2px rgba(126,203,255,0.5);
+    animation:sweep 9s linear infinite;
+    opacity:0.55;
+  }
+  @keyframes sweep{
+    0%{top:-2px;}
+    100%{top:100vh;}
+  }
+
+  header{
+    position:sticky; top:0; z-index:10;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:22px 6vw;
+    background:rgba(10,14,19,0.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:15px; letter-spacing:0.02em;}
+  .brand span{color:var(--cyan);}
+  nav{display:flex; gap:24px; font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.06em; text-transform:uppercase;}
+  nav a{color:var(--ink-dim); text-decoration:none; transition:color 0.2s;}
+  nav a:hover, nav a:focus-visible{color:var(--cyan); outline:none;}
+
+  main{position:relative; z-index:2;}
+
+  .hero{
+    min-height:92vh;
+    display:grid; grid-template-columns:1.15fr 0.85fr; align-items:center; gap:40px;
+    padding:60px 6vw;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  .hero-tag{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--cyan);
+    letter-spacing:0.14em; text-transform:uppercase; margin-bottom:22px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .hero-tag::before{content:''; width:8px; height:8px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan); animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.3;}}
+  h1.hero-title{
+    font-family:'Space Grotesk', sans-serif; font-weight:700;
+    font-size:clamp(2.2rem, 4.6vw, 3.8rem);
+    line-height:1.08; letter-spacing:-0.01em; max-width:16ch;
+    margin-bottom:22px;
+  }
+  h1.hero-title .accent{color:var(--cyan);}
+  .hero-sub{
+    max-width:56ch; color:var(--ink-dim); font-size:1.08rem; font-weight:400;
+    margin-bottom:34px;
+  }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap:32px;
+    font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ink-faint);
+    border-top:1px solid var(--line); padding-top:20px; max-width:760px;
+  }
+  .hero-meta div span{display:block; color:var(--ink-dim); font-size:10.5px; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;}
+  .hero-meta div strong{color:var(--ink); font-weight:500;}
+
+  .cta-row{display:flex; gap:16px; margin-bottom:40px; flex-wrap:wrap;}
+  .btn{
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px; letter-spacing:0.05em; text-transform:uppercase;
+    padding:13px 22px; border-radius:var(--radius); text-decoration:none;
+    border:1px solid var(--line); transition:all 0.2s;
+  }
+  .btn-primary{background:var(--cyan); color:#08131c; border-color:var(--cyan); font-weight:500;}
+  .btn-primary:hover{background:#9ed7ff;}
+  .btn-ghost{color:var(--ink-dim);}
+  .btn-ghost:hover{border-color:var(--cyan); color:var(--cyan);}
+
+  .hero-photo-wrap{
+    position:relative; justify-self:center;
+    width:min(340px, 80%); aspect-ratio:1/1.08;
+  }
+  .hero-photo-frame{
+    position:relative; width:100%; height:100%; overflow:hidden;
+    border:1px solid var(--line); background:var(--panel);
+  }
+  .hero-photo-frame img{
+    width:100%; height:100%; object-fit:cover;
+    filter:grayscale(0.55) contrast(1.08) brightness(0.96);
+    display:block;
+  }
+  .hero-photo-frame::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(126,203,255,0.08), rgba(10,14,19,0.35) 70%, rgba(10,14,19,0.75));
+    mix-blend-mode:multiply;
+  }
+  .frame-corner{position:absolute; width:18px; height:18px; border:1.5px solid var(--cyan); opacity:0.85;}
+  .fc-tl{top:-1px; left:-1px; border-right:none; border-bottom:none;}
+  .fc-tr{top:-1px; right:-1px; border-left:none; border-bottom:none;}
+  .fc-bl{bottom:-1px; left:-1px; border-right:none; border-top:none;}
+  .fc-br{bottom:-1px; right:-1px; border-left:none; border-top:none;}
+  .photo-label{
+    position:absolute; bottom:14px; left:14px; right:14px;
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--cyan);
+    letter-spacing:0.06em; text-transform:uppercase;
+    display:flex; justify-content:space-between;
+  }
+
+  section{padding:100px 6vw; position:relative; border-bottom:1px solid var(--line);}
+  .section-head{display:flex; align-items:baseline; gap:16px; margin-bottom:52px;}
+  .section-num{font-family:'IBM Plex Mono', monospace; color:var(--cyan-dim); font-size:13px;}
+  .section-title{font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:clamp(1.6rem,3vw,2.2rem);}
+  .section-title .dim{color:var(--ink-faint); font-weight:400;}
+
+  .timeline{max-width:900px; margin:0 auto;}
+  .t-item{display:grid; grid-template-columns:130px 1px 1fr; gap:0; padding-bottom:48px; position:relative;}
+  .t-item:last-child{padding-bottom:0;}
+  .t-year{font-family:'IBM Plex Mono', monospace; color:var(--cyan); font-size:13px; padding-top:2px;}
+  .t-rule{position:relative; background:var(--line);}
+  .t-rule::before{content:''; position:absolute; top:2px; left:50%; transform:translateX(-50%); width:9px; height:9px; border-radius:50%; background:var(--bg); border:2px solid var(--cyan);}
+  .t-body{padding-left:32px;}
+  .t-role{font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:1.1rem; margin-bottom:6px;}
+  .t-org{color:var(--ink-dim); font-size:0.92rem; margin-bottom:10px;}
+  .t-desc{color:var(--ink-dim); font-size:0.92rem; max-width:58ch;}
+  .t-badge{display:inline-block; margin-top:10px; margin-right:8px; font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--amber); border:1px solid rgba(232,163,61,0.35); padding:4px 10px; border-radius:var(--radius); letter-spacing:0.04em;}
+
+  .readout{display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:var(--line); border:1px solid var(--line); max-width:1100px; margin:0 auto;}
+  .readout-cell{background:var(--panel); padding:30px 20px;}
+  .readout-num{font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:2.2rem; color:var(--cyan); line-height:1;}
+  .readout-label{font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.05em; margin-top:10px;}
+
+  .pub-group{max-width:900px; margin:0 auto 56px auto;}
+  .pub-group:last-child{margin-bottom:0;}
+  .pub-group-title{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--cyan); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:18px; padding-bottom:10px; border-bottom:1px solid var(--line);}
+  .pub-row{display:grid; grid-template-columns:40px 1fr auto; gap:18px; align-items:start; padding:18px 0; border-bottom:1px solid var(--line);}
+  .pub-idx{font-family:'IBM Plex Mono', monospace; color:var(--ink-faint); font-size:13px; padding-top:3px;}
+  .pub-title{font-size:0.96rem; color:var(--ink);}
+  .pub-title a{color:var(--ink); text-decoration:none; border-bottom:1px dotted var(--ink-faint);}
+  .pub-title a:hover{color:var(--cyan); border-color:var(--cyan);}
+  .pub-cite{display:block; margin-top:5px; font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--ink-faint);}
+  .pub-tag{font-family:'IBM Plex Mono', monospace; font-size:10.5px; padding:5px 10px; border-radius:var(--radius); text-transform:uppercase; letter-spacing:0.05em; white-space:nowrap; height:fit-content;}
+  .tag-q1{border:1px solid rgba(126,203,255,0.4); color:var(--cyan);}
+  .tag-q2{border:1px solid rgba(232,163,61,0.4); color:var(--amber);}
+  .tag-book{border:1px solid var(--line); color:var(--ink-faint);}
+
+  .conf-list{max-width:900px; margin:0 auto; display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line);}
+  .conf-row{background:var(--panel); padding:24px 26px; display:grid; grid-template-columns:90px 1fr; gap:22px;}
+  .conf-date{font-family:'IBM Plex Mono', monospace; color:var(--cyan); font-size:12px; padding-top:2px;}
+  .conf-title{font-family:'Space Grotesk', sans-serif; font-size:1rem; margin-bottom:6px;}
+  .conf-venue{color:var(--ink-dim); font-size:0.88rem; margin-bottom:8px;}
+  .conf-prize{display:inline-flex; align-items:center; gap:6px; font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--amber);}
+
+  .skills-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--line); border:1px solid var(--line); max-width:1100px; margin:0 auto;}
+  .skill-cell{background:var(--panel); padding:30px 30px;}
+  .skill-cell h3{font-family:'Space Grotesk', sans-serif; font-size:1rem; color:var(--cyan); margin-bottom:14px; display:flex; align-items:center; gap:10px;}
+  .skill-cell h3::before{content:''; width:6px; height:6px; background:var(--cyan);}
+  .skill-cell ul{list-style:none; color:var(--ink-dim); font-size:0.9rem;}
+  .skill-cell li{padding:6px 0; border-bottom:1px dashed var(--line);}
+  .skill-cell li:last-child{border-bottom:none;}
+  .skill-cell li b{color:var(--ink); font-weight:500;}
+
+  .course-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px 40px; max-width:900px; margin:0 auto; font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:var(--ink-dim);}
+  .course-grid div{display:flex; gap:10px; padding:10px 0; border-bottom:1px solid var(--line);}
+  .course-grid div::before{content:'▸'; color:var(--cyan);}
+
+  .contact-wrap{max-width:760px; margin:0 auto; text-align:left;}
+  .contact-wrap p{color:var(--ink-dim); max-width:56ch; margin-bottom:32px;}
+  .contact-grid{display:flex; gap:48px; flex-wrap:wrap; font-family:'IBM Plex Mono', monospace; font-size:13px;}
+  .contact-grid div span{display:block; color:var(--ink-faint); font-size:11px; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;}
+  .contact-grid div a{color:var(--cyan); text-decoration:none; border-bottom:1px solid transparent;}
+  .contact-grid div a:hover{border-color:var(--cyan);}
+
+  .social-row{display:flex; gap:14px; margin-top:36px; flex-wrap:wrap;}
+  .social-link{
+    display:flex; align-items:center; gap:9px;
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.03em;
+    padding:11px 18px; border:1px solid var(--line); border-radius:var(--radius);
+    text-decoration:none; color:var(--ink-dim); transition:all 0.2s;
+  }
+  .social-link:hover{border-color:var(--cyan); color:var(--cyan);}
+  .social-link .dot{width:6px; height:6px; background:var(--cyan-dim); flex-shrink:0;}
+  .social-link:hover .dot{background:var(--cyan);}
+
+  footer{padding:36px 6vw; text-align:center; font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--ink-faint);}
+
+  @media (max-width:860px){
+    nav{display:none;}
+    .hero{grid-template-columns:1fr; padding-top:40px;}
+    .hero-photo-wrap{order:-1; width:200px; margin:0 auto;}
+    .readout{grid-template-columns:repeat(2,1fr);}
+    .skills-grid{grid-template-columns:1fr;}
+    .course-grid{grid-template-columns:1fr;}
+    .t-item{grid-template-columns:80px 1px 1fr;}
+    .pub-row{grid-template-columns:28px 1fr;}
+    .pub-tag{grid-column:1/-1; width:fit-content;}
+    .conf-row{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="scanline"></div>
+
+<header>
+  <div class="brand">DR. OBHULI CHANDRAN <span>M</span></div>
+  <nav>
+    <a href="#pathway">Pathway</a>
+    <a href="#publications">Publications</a>
+    <a href="#conferences">Conferences</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div>
+      <div class="hero-tag">Dept. of Radiology &amp; Imaging Technology · VMRF (DU), Salem</div>
+      <h1 class="hero-title">Reading the body in <span class="accent">signal &amp; shadow.</span></h1>
+      <p class="hero-sub">Assistant Professor and researcher in Medical Imaging Technology, focused on deep learning image reconstruction for radiation dose reduction in CT. The department's first full-time Dr. TMA PAI PhD Scholar at MCHP, MAHE, Manipal, with 10 publications and 4 conference presentations.</p>
+
+      <div class="cta-row">
+        <a href="#publications" class="btn btn-primary">View Publications</a>
+        <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+        <a href="https://orcid.org/0000-0001-5515-6377" target="_blank" rel="noopener" class="btn btn-ghost">ORCID</a>
+        <a href="https://www.linkedin.com/in/dr-obhuli-chandran-madhivanan-phd-13b388117/" target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn</a>
+      </div>
+
+      <div class="hero-meta">
+        <div><span>Role</span><strong>Assistant Professor</strong></div>
+        <div><span>Since</span><strong>15 Jul 2026</strong></div>
+        <div><span>Institution</span><strong>VMRF (DU), Salem</strong></div>
+        <div><span>Publications</span><strong>10 Total</strong></div>
+      </div>
+    </div>
+
+    <div class="hero-photo-wrap">
+      <div class="hero-photo-frame">
+        <img src="profile-photo.jpg" alt="Portrait of Dr. Obhuli Chandran M">
+        <div class="frame-corner fc-tl"></div>
+        <div class="frame-corner fc-tr"></div>
+        <div class="frame-corner fc-bl"></div>
+        <div class="frame-corner fc-br"></div>
+        <div class="photo-label"><span>OBHULI_C.M</span><span>MIT-2026</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pathway">
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Academic <span class="dim">Pathway</span></h2>
+    </div>
+    <div class="timeline">
+      <div class="t-item">
+        <div class="t-year">2015–2020</div>
+        <div class="t-rule"></div>
+        <div class="t-body">
+          <div class="t-role">BSc — Medical Imaging Technology</div>
+          <div class="t-org">MCHP, MAHE, Manipal</div>
+          <p class="t-desc">Foundational training in medical imaging technology.</p>
+          <span class="t-badge">7.8 CGPA</span>
+        </div>
+      </div>
+      <div class="t-item">
+        <div class="t-year">2020–2022</div>
+        <div class="t-rule"></div>
+        <div class="t-body">
+          <div class="t-role">MSc — Medical Imaging Technology</div>
+          <div class="t-org">MCHP, MAHE, Manipal</div>
+          <p class="t-desc">Research topic: Comparison of Effects of Physical Activities of Two Intensities on Vascular and Cognitive Functions.</p>
+          <span class="t-badge">7.29 CGPA</span>
+        </div>
+      </div>
+      <div class="t-item">
+        <div class="t-year">2022–2026</div>
+        <div class="t-rule"></div>
+        <div class="t-body">
+          <div class="t-role">PhD — Medical Imaging Technology</div>
+          <div class="t-org">MCHP, MAHE, Manipal · Dr. TMA PAI PhD Scholar</div>
+          <p class="t-desc">Department's first full-time Dr. TMA PAI PhD Scholar. Research topic: Comparison of Deep Learning Reconstruction and Iterative Reconstruction Algorithm for Reducing Radiation Dose in CT Brain and Thorax.</p>
+        </div>
+      </div>
+      <div class="t-item">
+        <div class="t-year">Since Jul 2026</div>
+        <div class="t-rule"></div>
+        <div class="t-body">
+          <div class="t-role">Assistant Professor</div>
+          <div class="t-org">Dept. of Radiology and Imaging Technology, School of Allied Health Sciences, VMRF (DU), Salem Campus</div>
+          <p class="t-desc">Teaching and continuing research in medical imaging technology, with prior clinical internship at Kasturba Medical College, Manipal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="research">
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Research <span class="dim">Output</span></h2>
+    </div>
+    <div class="readout">
+      <div class="readout-cell"><div class="readout-num">10</div><div class="readout-label">Total Publications</div></div>
+      <div class="readout-cell"><div class="readout-num">5</div><div class="readout-label">First Author</div></div>
+      <div class="readout-cell"><div class="readout-num">4</div><div class="readout-label">Secondary Author</div></div>
+      <div class="readout-cell"><div class="readout-num">1</div><div class="readout-label">Book Chapter</div></div>
+      <div class="readout-cell"><div class="readout-num">4</div><div class="readout-label">Conference Talks</div></div>
+    </div>
+  </section>
+
+  <section id="publications">
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Publication <span class="dim">Record</span></h2>
+    </div>
+
+    <div class="pub-group">
+      <div class="pub-group-title">As First Author</div>
+      <div class="pub-row">
+        <div class="pub-idx">01</div>
+        <div class="pub-title"><a href="https://doi.org/10.3389/fradi.2026.1824489" target="_blank" rel="noopener">Deep learning image reconstruction technique for improving image quality and radiation dose reduction compared to iterative reconstruction technique in non-contrast CT head imaging</a><span class="pub-cite">Chandran M.O, Pendem S, Kadavigere R, Priyanka, PS P, Chacko C · Front. Radiol. 6:1824489 (2026)</span></div>
+        <div class="pub-tag tag-q2">Q2</div>
+      </div>
+      <div class="pub-row">
+        <div class="pub-idx">02</div>
+        <div class="pub-title"><a href="https://www.clinicalradiologyonline.net/article/S0009-9260(25)00389-7/fulltext" target="_blank" rel="noopener">Clinical value of deep learning image reconstruction in chest computed tomography (CT) imaging: a systematic review</a><span class="pub-cite">Obhuli C, Pendem S, Abhijith S · Clinical Radiology, 92 (2025)</span></div>
+        <div class="pub-tag tag-q2">Q2</div>
+      </div>
+      <div class="pub-row">
+        <div class="pub-idx">03</div>
+        <div class="pub-title"><a href="https://doi.org/10.12688/f1000research.150773.1" target="_blank" rel="noopener">Comparison of image quality between Deep learning image reconstruction and Iterative reconstruction technique for CT Brain — a pilot study</a><span class="pub-cite">Chandran M O, Pendem S, P S P et al. · F1000Research 13:691 (2024)</span></div>
+        <div class="pub-tag tag-q1">Q1</div>
+      </div>
+      <div class="pub-row">
+        <div class="pub-idx">04</div>
+        <div class="pub-title"><a href="https://doi.org/10.12688/f1000research.147345.1" target="_blank" rel="noopener">Influence of deep learning image reconstruction algorithm for reducing radiation dose and image noise compared to iterative reconstruction and filtered back projection for head and chest CT examinations: a systematic review</a><span class="pub-cite">Chandran M O, Pendem S, P S P et al. · F1000Research 13:274 (2024)</span></div>
+        <div class="pub-tag tag-q1">Q1</div>
+      </div>
+      <div class="pub-row">
+        <div class="pub-idx">05</div>
+        <div class="pub-title"><a href="https://www.sciencedirect.com/science/article/pii/S1658361223000410?via%3Dihub" target="_blank" rel="noopener">Effects of physical activity breaks during prolonged sitting on vascular and executive function — A randomized cross-over trial</a><span class="pub-cite">Chandran O, Shurthi P, Sukumar S et al.</span></div>
+        <div class="pub-tag tag-q2">Q2</div>
+      </div>
+    </div>
+
+    <div class="pub-group">
+      <div class="pub-group-title">As Secondary Author</div>
+      <div class="pub-row">
+        <div class="pub-idx">01</div>
+        <div class="pub-title"><a href="https://doi.org/10.12688/f1000research.110911.4" target="_blank" rel="noopener">Alteration in central vascular and cognitive functions during simulated work conditions in males — a secondary analysis from a randomised controlled trial</a><span class="pub-cite">Shruthi P P, Chandran M O, Chandrasekaran B et al. · F1000Research 11:397 (2026)</span></div>
+        <div class="pub-tag tag-q1">Q1</div>
+      </div>
+      <div class="pub-row">
+        <div class="pub-idx">02</div>
+        <div class="pub-title"><a href="https://doi.org/10.12688/f1000research.160088.1" target="_blank" rel="noopener">Applications of MR Fingerprinting derived T1 and T2 values in Adult brain: A Systematic review</a><span class="pub-cite">Mohamed Sajer R, Pendem S, Kadavigere R, Chandran M O et al. · F1000Research 14:54 (2025)</span></div>
+        <div class="pub-tag tag-q1">Q1</div>
+      </div>
+      <div class="pub-row">
+        <div class="pub-idx">03</div>
+        <div class="pub-title"><a href="https://doi.org/10.12688/f1000research.154680.2" target="_blank" rel="noopener">Role of Artificial intelligence model in prediction of low back pain using T2 weighted MRI of Lumbar spine</a><span class="pub-cite">Muhaimil A, Pendem S, Sampathilla N, Chandran M O et al. · F1000Research 13:1035 (2024)</span></div>
+        <div class="pub-tag tag-q1">Q1</div>
+      </div>
+      <div class="pub-row">
+        <div class="pub-idx">04</div>
+        <div class="pub-title"><a href="https://doi.org/10.1016/j.radi.2024.08.012" target="_blank" rel="noopener">Impact of artificial intelligence assisted compressed sensing technique on scan time and image quality in musculoskeletal MRI — A systematic review</a><span class="pub-cite">Priyanka, Kadavigere R, Nayak S S, Chandran O M et al. · Radiography 30, 1704–1712 (2024)</span></div>
+        <div class="pub-tag tag-q1">Q1</div>
+      </div>
+    </div>
+
+    <div class="pub-group">
+      <div class="pub-group-title">Book Chapter</div>
+      <div class="pub-row">
+        <div class="pub-idx">01</div>
+        <div class="pub-title"><a href="https://doi.org/10.4018/979-8-3373-0903-3.ch003" target="_blank" rel="noopener">AI-Enhanced Image Analysis and Interpretation</a><span class="pub-cite">S. Abhijith, P Aswathi, Tancia Pires, P Saikiran, Priyanka, Obhuli C et al. · ISBN13: 9798337309033</span></div>
+        <div class="pub-tag tag-book">Chapter</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="conferences">
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Conference <span class="dim">Presentations</span></h2>
+    </div>
+    <div class="conf-list">
+      <div class="conf-row">
+        <div class="conf-date">Oct 2023</div>
+        <div>
+          <div class="conf-title">Role of Deep Learning Reconstruction Technique in Improving Image Quality at Low Dose CT Brain Imaging Compared to Standard Dose Iterative Reconstruction Technique</div>
+          <div class="conf-venue">Oral scientific presentation — MMICON 2022, MCHP Manipal</div>
+          <div class="conf-prize">★ 1st Prize, Scientific Oral Session</div>
+        </div>
+      </div>
+      <div class="conf-row">
+        <div class="conf-date">Jun 2024</div>
+        <div>
+          <div class="conf-title">Enhancing Image Quality in Low-Dose CT Brain Imaging: A Comparative Study of Deep Learning Reconstruction Versus Standard Iterative Techniques</div>
+          <div class="conf-venue">Oral poster — Manipal Quest 1.0, KMC, Manipal</div>
+        </div>
+      </div>
+      <div class="conf-row">
+        <div class="conf-date">Oct 2024</div>
+        <div>
+          <div class="conf-title">Evaluating the Impact of Deep Learning Image Reconstruction on Low-Dose HRCT Thorax: A Prospective Comparative Study</div>
+          <div class="conf-venue">Scientific oral presentation — 6th NCSORRT 2024, Kanyakumari, Tamil Nadu</div>
+        </div>
+      </div>
+      <div class="conf-row">
+        <div class="conf-date">Apr 2025</div>
+        <div>
+          <div class="conf-title">Comparison of Deep Learning Reconstruction and Iterative Reconstruction Algorithms for Reducing Radiation Dose in CT Brain and Thorax</div>
+          <div class="conf-venue">Oral poster — MRC 2025, MAHE SRF event</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="section-head">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Technical <span class="dim">Skills</span></h2>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-cell">
+        <h3>CT Imaging</h3>
+        <ul>
+          <li><b>Scanners</b> — 128-slice Philips Incisive, 16-slice Philips Big Bore, 64-slice Philips Brilliance</li>
+          <li><b>Studies</b> — Routine, CT Angiography, CT Coronary Angiography, BMD, Cardiac CT</li>
+          <li><b>Interventional</b> — Biopsy, RF Ablation, FNAC</li>
+        </ul>
+      </div>
+      <div class="skill-cell">
+        <h3>MRI Imaging</h3>
+        <ul>
+          <li>1.5T GE Signa HDxT</li>
+          <li>1.5T Philips Achieva</li>
+          <li>3T United Imaging</li>
+        </ul>
+      </div>
+      <div class="skill-cell">
+        <h3>X-Ray &amp; Fluoroscopy</h3>
+        <ul>
+          <li><b>General radiography</b> — GE, Philips, Siemens (300–500mA); mobile (60–100mA)</li>
+          <li><b>DSA</b> — Philips Allura XPer FD20</li>
+          <li><b>Fluoroscopic studies</b> — IVU, IVP, MCU, barium studies, HSG (Siemens ICONOS R 200)</li>
+          <li><b>Digital radiography</b> — Fuji, Titan 2000 Dual, Philips DR</li>
+          <li><b>Dental imaging</b> — OPG, CBCT, intra-oral</li>
+          <li><b>PACS/RIS</b> — Mediff platforms</li>
+        </ul>
+      </div>
+      <div class="skill-cell">
+        <h3>Research &amp; AI</h3>
+        <ul>
+          <li>Clinical research, research methodology, grant &amp; scientific writing</li>
+          <li>Systematic review &amp; meta-analysis, research statistics, image analysis</li>
+          <li>AI-based reconstruction algorithms in CT, AI workflow in diagnostic imaging</li>
+          <li>Basic Python for research-level interpretation</li>
+        </ul>
+      </div>
+      <div class="skill-cell">
+        <h3>Software &amp; Tools</h3>
+        <ul>
+          <li>Jamovi, SPSS</li>
+          <li>Mendeley, Zotero</li>
+          <li>MS Office (Word, Excel, PowerPoint)</li>
+          <li>Generative AI tools — ChatGPT, Claude, Gemini</li>
+        </ul>
+      </div>
+      <div class="skill-cell">
+        <h3>Teaching &amp; Mentorship</h3>
+        <ul>
+          <li>Structured teaching in radiographic positioning, CT, MRI, image interpretation</li>
+          <li>Clinical postings mentoring for UG/PG students</li>
+          <li>MAHE-SRF executive committee, journal club discussions</li>
+          <li>Mentors junior students in research methodology and thesis prep</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="courses">
+    <div class="section-head">
+      <span class="section-num">06</span>
+      <h2 class="section-title">Certified <span class="dim">Coursework</span></h2>
+    </div>
+    <div class="course-grid">
+      <div>Introduction to Systematic Review and Meta-Analysis — Coursera</div>
+      <div>Introduction to Artificial Intelligence — Coursera</div>
+      <div>English for Effective Business Writing — Coursera</div>
+      <div>Research Methodology — Coursera</div>
+      <div>Health Equity Assessment Toolkit (HEAT / HEAT Plus) — WHO</div>
+      <div>Introduction to Machine Learning — Coursera</div>
+      <div>Neural Networks and Deep Learning — Coursera</div>
+      <div>Improving Deep Neural Networks: Hyperparameter Tuning, Regularization and Optimization — Coursera</div>
+      <div>How to Conduct Ethically Sound Research — Karger Publishers</div>
+      <div>How to Avoid Your Paper Being Rejected — Karger Publishers</div>
+    </div>
+  </section>
+
+  <section id="contact" style="border-bottom:none;">
+    <div class="section-head">
+      <span class="section-num">07</span>
+      <h2 class="section-title">Get in <span class="dim">Touch</span></h2>
+    </div>
+    <div class="contact-wrap">
+      <p>For collaboration, teaching enquiries, or research correspondence, reach out directly.</p>
+      <div class="contact-grid">
+        <div><span>Email</span><a href="mailto:obhulichandran24@gmail.com">obhulichandran24@gmail.com</a></div>
+        <div><span>Phone</span><a href="tel:+919445882423">+91 94458 82423</a></div>
+        <div><span>Institution</span>VMRF (DU), Salem Campus</div>
+        <div><span>Department</span>Radiology &amp; Imaging Technology, SAHS</div>
+      </div>
+      <div class="social-row">
+        <a class="social-link" href="https://www.linkedin.com/in/dr-obhuli-chandran-madhivanan-phd-13b388117/" target="_blank" rel="noopener"><span class="dot"></span>LinkedIn</a>
+        <a class="social-link" href="https://orcid.org/0000-0001-5515-6377" target="_blank" rel="noopener"><span class="dot"></span>ORCID</a>
+        <a class="social-link" href="https://www.researchgate.net/profile/Obhuli-Madhivanan" target="_blank" rel="noopener"><span class="dot"></span>ResearchGate</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 Dr. Obhuli Chandran M — Department of Radiology and Imaging Technology, School of Allied Health Sciences, VMRF (DU), Salem Campus
+</footer>
+
+</body>
+</html>
